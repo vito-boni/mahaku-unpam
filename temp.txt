@@ -1,0 +1,43 @@
+// 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../domain/user.dart';
+import 'dummy_users.dart';
+
+class AuthRepository {
+  User? _currentUser;
+
+  User? get currentUser => _currentUser;
+
+  Future<bool> login(String username, String password) async {
+    final user = dummyUsers.firstWhere(
+      (u) => u['username'] == username && u['password'] == password,
+      orElse: () => {},
+    );
+
+    if (user.isEmpty) return false;
+
+    _currentUser = User(
+      username: user['username']!,
+      email: user['email']!,
+    );
+
+    return true;
+  }
+
+  void logout() {
+    _currentUser = null;
+  }
+}
+
+---
+// user.dart
+
+class User {
+  final String username;
+  final String email;
+
+  User({
+    required this.username,
+    required this.email,
+  });
+}
